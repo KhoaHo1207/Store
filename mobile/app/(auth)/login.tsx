@@ -12,10 +12,10 @@ import {
 } from "react-native";
 import { Checkbox } from "expo-checkbox";
 import Button from "@/components/common/Button";
-import { useAuth } from "@/contexts/authContext";
 import { router } from "expo-router";
+import { useAuthStore } from "@/stores/authStore";
 const LoginScreen = () => {
-  const { login, loading } = useAuth();
+  const { login, loading } = useAuthStore();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [rememberMe, setRememberMe] = useState<boolean>(false);
@@ -30,7 +30,10 @@ const LoginScreen = () => {
   const hanldleLogin = async () => {
     if (!email || !password)
       return Alert.alert("Warning", "Please fill all the fields!");
-    await login({ email, password });
+    const res = await login(email, password);
+    if (res) {
+      router.replace("/(main)");
+    }
   };
 
   return (

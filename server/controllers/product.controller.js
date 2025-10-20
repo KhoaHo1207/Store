@@ -59,11 +59,47 @@ const addProduct = async (req, res) => {
 
 const gettAllProduct = async (req, res) => {
   try {
-    const products = await Product.find({}).sort({ createdAt: -1 });
+    const { brand, search, sort } = req.query;
+
+    //pagination
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 4;
+    const skip = (page - 1) * limit;
+
+    const filter = {};
+
+    //filter by brand
+    if (brand) {
+      filter.brand = brand;
+    }
+    //search by artName
+    if (search) {
+      filter.artName = { $regex: search, $options: "i" };
+    }
+    //sort by created date
+    let sortOption = { createdAt: -1 }; // mặc định: mới nhất
+
+    if (sort === "oldest") sortOption = { createdAt: 1 };
+    if (sort === "price_asc") sortOption = { price: 1 };
+    if (sort === "price_desc") sortOption = { price: -1 };
+
+    const products = await Product.find(filter)
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limit);
+
+    const totalProducts = await Product.countDocuments(filter);
+    const totalPages = Math.ceil(totalProducts / limit);
 
     return res.status(200).json({
       success: true,
       message: "Products fetched successfully",
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalProducts,
+        limit,
+      },
       data: products,
     });
   } catch (error) {
@@ -155,6 +191,7 @@ const deleteProductById = async (req, res) => {
     });
   }
 };
+
 module.exports = {
   addProduct,
   gettAllProduct,

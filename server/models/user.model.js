@@ -4,11 +4,13 @@ const userSchema = new mongoose.Schema(
   {
     email: {
       type: String,
+      unique: true,
       required: true,
     },
-    username: {
+    fullName: {
       type: String,
       required: true,
+      trim: true,
     },
     password: {
       type: String,
@@ -20,8 +22,19 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
+      enum: ["user", "admin"],
       default: "user",
     },
+    cart: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Cart",
+    },
+    favorites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Favorite",
+      },
+    ],
   },
   { timestamps: true }
 );

@@ -3,8 +3,8 @@ const bcrypt = require("bcryptjs");
 const { generateToken } = require("../middlewares/jwt");
 
 const register = async (req, res) => {
-  const { email, username, password, avatar } = req.body;
-  if (!email || !username || !password) {
+  const { email, fullName, password, avatar } = req.body;
+  if (!email || !fullName || !password) {
     return res.status(400).json({
       success: false,
       message: "All fields are required",
@@ -24,7 +24,7 @@ const register = async (req, res) => {
 
     const user = await User.create({
       email,
-      username,
+      fullName,
       password: hashedPassord,
       avatar,
     });
@@ -100,4 +100,38 @@ const getCurrentUser = async (req, res) => {
     });
   }
 };
-module.exports = { register, login, getCurrentUser };
+
+const updateProfile = async (req, res) => {
+  try {
+    const user = req.user;
+    const { fullName, email, avatar } = req.body;
+
+    if (fullName) {
+      user.fullName = fullName;
+    }
+    if (email) {
+      user.email = email;
+    }
+    if (avatar) {
+      user.avatar = avatar;
+    }
+    const updatedUser = await user.save();
+    return res.status(200).json({
+      success: true,
+      message: "Update profile successfully",
+      data: {
+        fullName: updatedUser.fullName,
+        email: updatedUser.email,
+        avatar: updatedUser.avatar,
+      },
+    });
+  } catch (error) {
+    console.log("Somwthing went error while update profile", error);
+    rs.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+module.exports = { register, login, getCurrentUser, updateProfile };

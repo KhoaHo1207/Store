@@ -1,6 +1,6 @@
 import Button from "@/components/common/Button";
 import FormInput from "@/components/common/FormInput";
-import { useAuth } from "@/contexts/authContext";
+import { useAuthStore } from "@/stores/authStore";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { Lock, Mail, User } from "lucide-react-native";
@@ -14,18 +14,18 @@ import {
   View,
 } from "react-native";
 const SignUpScreen = () => {
-  const { signup, loading } = useAuth();
+  const { signup, loading } = useAuthStore();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
+  const [fullName, setFullName] = useState<string>("");
 
   const handleChangeEmail = (e: any) => {
     setEmail(e);
   };
 
-  const handdleChangeUsername = (e: any) => {
-    setUsername(e);
+  const handleChangeFullName = (e: any) => {
+    setFullName(e);
   };
   const hanldeChangePassword = (e: any) => {
     setPassword(e);
@@ -36,9 +36,12 @@ const SignUpScreen = () => {
   };
 
   const handleSignUp = async () => {
-    if (!email || !password || !username || !confirmPassword)
+    if (!email || !password || !fullName || !confirmPassword)
       return Alert.alert("Warning", "Please fill all the fields!");
-    await signup({ email, username, password });
+    const res = await signup(email, fullName, password);
+    if (res) {
+      router.replace("/(auth)/login");
+    }
   };
 
   return (
@@ -86,9 +89,9 @@ const SignUpScreen = () => {
           <FormInput
             icon={<User color={"gray"} size={20} />}
             type="text"
-            value={username}
-            onChangeText={handdleChangeUsername}
-            placeholder={"Username"}
+            value={fullName}
+            onChangeText={handleChangeFullName}
+            placeholder={"Your full name"}
             className="flex-1"
           />
           <FormInput

@@ -1,15 +1,16 @@
 import React, { useEffect, useRef } from "react";
 import { Animated, Image, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useAuthStore } from "@/stores/authStore";
 import { useRouter } from "expo-router";
 
 const SplashScreen = () => {
   const router = useRouter();
+  const { checkToken } = useAuthStore();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.9)).current;
 
   useEffect(() => {
-    // Hiệu ứng fade + scale
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
@@ -23,14 +24,18 @@ const SplashScreen = () => {
         useNativeDriver: true,
       }),
     ]).start();
+  }, [fadeAnim, scaleAnim]);
 
-    // Chuyển trang sau 2s
-    const timer = setTimeout(() => {
-      router.replace("/(auth)/login");
-    }, 2000);
+  useEffect(() => {
+    const init = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const tokenFromStore = await checkToken();
 
-    return () => clearTimeout(timer);
-  }, [fadeAnim, scaleAnim, router]);
+      if (tokenFromStore) router.replace("/(main)");
+      else router.replace("/(auth)/login");
+    };
+    init();
+  }, []);
 
   return (
     <View className="flex-1">
