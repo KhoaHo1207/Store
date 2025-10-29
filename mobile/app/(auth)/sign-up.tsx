@@ -13,7 +13,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 const SignUpScreen = () => {
+  const inset = useSafeAreaInsets();
   const { signup, loading } = useAuthStore();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -46,30 +48,20 @@ const SignUpScreen = () => {
 
   return (
     <ScrollView
-      className="flex-1 bg-white"
-      contentContainerStyle={{ flexGrow: 1 }}
+      contentContainerStyle={{ flexGrow: 1, paddingTop: inset.top + 15 }}
       showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
+      className="bg-white"
     >
-      <View className="relative">
-        <LinearGradient
-          colors={["#FF8008", "#FFC837"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          className="h-52 w-full items-center justify-center rounded-b-3xl"
+      <View className="w-32 h-32 bg-orange-400 rounded-full shadow-2xl flex items-center justify-center mx-auto">
+        <Image
+          source={require("@/assets/images/shop.png")}
+          resizeMode="contain"
+          className="w-24 h-24"
         />
-
-        <View className="absolute left-0 right-0 -bottom-16 items-center">
-          <View className="w-32 h-32 bg-white rounded-full shadow-2xl items-center justify-center">
-            <Image
-              source={require("@/assets/images/shop.png")}
-              resizeMode="contain"
-              className="w-24 h-24"
-            />
-          </View>
-        </View>
       </View>
 
-      <View className="mt-24 px-5">
+      <View className="mt-8 px-5">
         <Text className="text-3xl font-bold text-gray-800 text-center">
           Register Account
         </Text>

@@ -22,7 +22,7 @@ const RootLayoutInner = () => {
 const RootLayout = () => {
   return (
     <>
-      <StatusBar translucent backgroundColor="transparent" style="auto" />
+      <StatusBar translucent backgroundColor="transparent" style="dark" />
       <RootLayoutInner />
       <Toast />
     </>

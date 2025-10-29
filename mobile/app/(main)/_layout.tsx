@@ -1,12 +1,12 @@
-import React from "react";
 import { Tabs } from "expo-router";
-import { Home, ShoppingCart, User, Package } from "lucide-react-native";
+import { Heart, Home, User } from "lucide-react-native";
+import React from "react";
 const MainLayout = () => {
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: "#FF8008",
-        tabBarInactiveTintColor: "#b5b5b5",
+        tabBarInactiveTintColor: "#757575",
         tabBarStyle: { height: 60 },
         headerShown: false,
       }}
@@ -19,19 +19,26 @@ const MainLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="product"
+        name="favorite"
         options={{
-          title: "Product",
-          tabBarIcon: ({ color }) => <Package color={color} size={22} />,
+          title: "Favorite",
+          tabBarIcon: ({ color }) => <Heart color={color} size={22} />,
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="cart"
         options={{
           title: "Cart",
           tabBarIcon: ({ color }) => <ShoppingCart color={color} size={22} />,
         }}
       />
+      <Tabs.Screen
+        name="order"
+        options={{
+          title: "Order",
+          tabBarIcon: ({ color }) => <Package color={color} size={22} />,
+        }}
+      /> */}
       <Tabs.Screen
         name="profile"
         options={{

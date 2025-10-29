@@ -14,7 +14,7 @@ const SearchBar = ({
   placeholder = "",
 }: SearchBarProps) => {
   return (
-    <View className="flex-row items-center bg-white rounded-full px-3 shadow-sm">
+    <View className="flex-row items-center bg-white rounded-xl p-3 border border-gray-200">
       <Search size={20} color="#6B7280" strokeWidth={1} />
       <TextInput
         value={value}

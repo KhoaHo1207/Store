@@ -14,6 +14,11 @@ interface SignupResponse {
   message: string;
 }
 
+interface UpdateProfileResponse {
+  success: boolean;
+  message: string;
+  data: UserTypes;
+}
 export const loginService = async ({
   email,
   password,
@@ -77,5 +82,30 @@ export const fetchCurrentUserService = async (): Promise<
     throw new Error(
       error?.response?.data?.message || "Failed to fetch current user"
     );
+  }
+};
+
+export const updateProfileService = async ({
+  fullName,
+  phone,
+  address,
+  avatar,
+}: {
+  fullName?: string;
+  phone?: string;
+  address?: string;
+  avatar?: string;
+}): Promise<UpdateProfileResponse> => {
+  try {
+    const response = await axiosConfig.put("/auth/profile", {
+      fullName: fullName,
+      phone: phone,
+      address: address,
+      avatar: avatar,
+    });
+    return response.data;
+  } catch (error: any) {
+    console.log("Something went wront", error);
+    throw error;
   }
 };

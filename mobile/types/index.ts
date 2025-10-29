@@ -41,3 +41,12 @@ export interface ApiResponse<T> {
   pagination?: Pagination;
   data: T;
 }
+
+export interface ReviewTypes {
+  _id: string;
+  productId: string;
+  userId: string;
+  rating: number;
+  comment: string;
+  createdAt: Date;
+}

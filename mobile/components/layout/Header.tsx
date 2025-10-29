@@ -2,12 +2,10 @@ import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Bell } from "lucide-react-native";
 import { getGreeting } from "@/utils/features";
+import { UserTypes } from "@/types";
 
 interface HeaderProps {
-  user?: {
-    fullName?: string;
-    avatar?: string;
-  };
+  user?: UserTypes | null;
   notificationsCount?: number;
 }
 
@@ -38,7 +36,6 @@ const Header = ({ user, notificationsCount = 0 }: HeaderProps) => {
       >
         <Bell size={22} color="#333" />
 
-        {/* Badge thông báo */}
         {notificationsCount > 0 && (
           <View className="absolute -top-1.5 -right-1.5 bg-primary w-5 h-5 rounded-full items-center justify-center">
             <Text className="text-white text-[10px] font-semibold">

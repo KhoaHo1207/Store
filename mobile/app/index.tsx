@@ -1,12 +1,12 @@
+import { useAuthStore } from "@/stores/authStore";
+import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
 import React, { useEffect, useRef } from "react";
 import { Animated, Image, View } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { useAuthStore } from "@/stores/authStore";
-import { useRouter } from "expo-router";
 
 const SplashScreen = () => {
   const router = useRouter();
-  const { checkToken } = useAuthStore();
+  const { checkToken, fetchCurrentUser } = useAuthStore();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.9)).current;
 
@@ -30,35 +30,33 @@ const SplashScreen = () => {
     const init = async () => {
       await new Promise((resolve) => setTimeout(resolve, 2000));
       const tokenFromStore = await checkToken();
-
+      if (tokenFromStore) fetchCurrentUser();
       if (tokenFromStore) router.replace("/(main)");
       else router.replace("/(auth)/login");
     };
     init();
-  }, []);
+  }, [checkToken, router]);
 
   return (
     <View className="flex-1">
-      {/* Nền gradient toàn màn */}
       <LinearGradient
         colors={["#FF8008", "#FFC837"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         className="flex-1 items-center justify-center"
       >
-        {/* Logo được animate */}
         <Animated.View
           style={{
             opacity: fadeAnim,
             transform: [{ scale: scaleAnim }],
           }}
-          className="items-center justify-center"
+          className="h-full w-full items-center justify-center"
         >
           <View className="w-48 h-48 items-center justify-center">
             <Image
               source={require("@/assets/images/shop.png")}
               resizeMode="contain"
-              style={{ width: "100%", height: "100%" }}
+              className="w-full h-full"
             />
           </View>
         </Animated.View>

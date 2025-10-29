@@ -5,13 +5,18 @@ const {
   getProductById,
   updateProductById,
   deleteProductById,
+  getReviewByProductId,
+  addReview,
 } = require("../controllers/product.controller");
 const { protect, authorize } = require("../middlewares/checkRole");
 const router = express.Router();
 
 router.post("/", authorize("admin"), addProduct);
-router.get("/", gettAllProduct);
-router.get("/:id", getProductById);
+router.get("/", protect, gettAllProduct);
+router.get("/:id", protect, getProductById);
 router.put("/:id", updateProductById);
 router.delete("/:id", deleteProductById);
+
+router.get("/:id/review", protect, getReviewByProductId);
+router.post("/:id/review", protect, addReview);
 module.exports = router;

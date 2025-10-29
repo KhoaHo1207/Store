@@ -1,9 +1,12 @@
 const User = require("../models/user.model");
+const Favorite = require("../models/favorite.model");
+const Review = require("../models/review.model");
 const bcrypt = require("bcryptjs");
 const { generateToken } = require("../middlewares/jwt");
+const { getDefaultAvatar } = require("../utils/avatar");
 
 const register = async (req, res) => {
-  const { email, fullName, password, avatar } = req.body;
+  const { email, fullName, password } = req.body;
   if (!email || !fullName || !password) {
     return res.status(400).json({
       success: false,
@@ -26,7 +29,7 @@ const register = async (req, res) => {
       email,
       fullName,
       password: hashedPassord,
-      avatar,
+      avatar: getDefaultAvatar(fullName),
     });
 
     return res.status(201).json({
@@ -87,16 +90,27 @@ const login = async (req, res) => {
 const getCurrentUser = async (req, res) => {
   try {
     const user = req.user;
+    const userId = user._id;
+
+    const [favorites, reviews] = await Promise.all([
+      Favorite.find({ userId }),
+      Review.find({ userId }),
+    ]);
+
     return res.status(200).json({
       success: true,
       message: "Get current user successfully",
-      data: user,
+      data: {
+        inform: user,
+        favorites,
+        reviews,
+      },
     });
   } catch (error) {
-    console.log("Something went wrong while getting current user", error);
+    console.error("Something went wrong while getting current user", error);
     res.status(500).json({
-      succes: false,
-      message: "Internael Server Error",
+      success: false,
+      message: "Internal Server Error",
     });
   }
 };
@@ -104,16 +118,20 @@ const getCurrentUser = async (req, res) => {
 const updateProfile = async (req, res) => {
   try {
     const user = req.user;
-    const { fullName, email, avatar } = req.body;
+    const { fullName, avatar, phone, address } = req.body;
 
     if (fullName) {
       user.fullName = fullName;
     }
-    if (email) {
-      user.email = email;
-    }
+
     if (avatar) {
       user.avatar = avatar;
+    }
+    if (phone) {
+      user.phone = phone;
+    }
+    if (address) {
+      user.address = address;
     }
     const updatedUser = await user.save();
     return res.status(200).json({
@@ -123,6 +141,8 @@ const updateProfile = async (req, res) => {
         fullName: updatedUser.fullName,
         email: updatedUser.email,
         avatar: updatedUser.avatar,
+        phone: updatedUser.phone,
+        address: updatedUser.address,
       },
     });
   } catch (error) {

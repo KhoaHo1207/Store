@@ -21,16 +21,14 @@ const FormInput = ({
   useState<boolean>(false);
   return (
     <View
-      className={`flex-row items-center border border-gray-300 rounded-lg bg-gray-50 px-4 h-12 ${
+      className={`flex-row items-center border border-gray-300 rounded-lg bg-gray-50 px-4 ${
         className || ""
       }`}
     >
-      {/* Icon trái */}
       {icon && <View className="mr-3">{icon}</View>}
 
-      {/* TextInput chiếm hết khoảng trống */}
       <TextInput
-        className="flex-1 text-base" // text-base ~16px
+        className="flex-1 text-base h-16"
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
@@ -39,7 +37,6 @@ const FormInput = ({
         secureTextEntry={type === "password" && !showPassword}
       />
 
-      {/* Eye icon sát phải */}
       {type === "password" && (
         <TouchableOpacity
           onPress={() => setShowPassword((prev) => !prev)}
