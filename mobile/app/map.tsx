@@ -74,8 +74,8 @@ export default function MapScreen() {
               latitude: location.coords.latitude,
               longitude: location.coords.longitude,
             }}
-            title="Vị trí của bạn"
-            description="Đây là vị trí hiện tại của bạn"
+            title="Current position"
+            description="This is your current position "
           />
         )}
       </MapView>

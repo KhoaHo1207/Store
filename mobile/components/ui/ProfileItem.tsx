@@ -16,7 +16,7 @@ const ProfileItem = (item: Props) => {
     >
       <View className={`flex-row gap-3`}>
         {item.icon}
-        <Text className={`text-xl ${item.color ? `text-[${item.color}]` : ""}`}>
+        <Text className={`text-xl ${item.color ? `text-[#FF2E2E]` : ""}`}>
           {item.title}
         </Text>
       </View>

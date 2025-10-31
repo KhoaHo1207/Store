@@ -2,14 +2,7 @@ import Loading from "@/components/common/Loading";
 import ProfileItem from "@/components/ui/ProfileItem";
 import { useAuthStore } from "@/stores/authStore";
 import { useRouter } from "expo-router";
-import {
-  Edit,
-  Heart,
-  LogOut,
-  Map,
-  Package,
-  ShoppingCart,
-} from "lucide-react-native";
+import { Edit, Heart, LogOut, Map, MessageCircle } from "lucide-react-native";
 import React, { useEffect } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
@@ -29,6 +22,11 @@ const ProfileScreen = () => {
       title: "Favorite",
       icon: <Heart />,
       onPress: () => router.push("/(main)/favorite"),
+    },
+    {
+      title: "Chat AI",
+      icon: <MessageCircle />,
+      onPress: () => router.push("/(main)/chat"),
     },
     // {
     //   title: "Order",

@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { Heart, Home, User } from "lucide-react-native";
+import { Heart, Home, MessageCircle, User } from "lucide-react-native";
 import React from "react";
 const MainLayout = () => {
   return (
@@ -23,6 +23,13 @@ const MainLayout = () => {
         options={{
           title: "Favorite",
           tabBarIcon: ({ color }) => <Heart color={color} size={22} />,
+        }}
+      />
+      <Tabs.Screen
+        name="chat"
+        options={{
+          title: "Chat AI",
+          tabBarIcon: ({ color }) => <MessageCircle color={color} size={22} />,
         }}
       />
       {/* <Tabs.Screen

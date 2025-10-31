@@ -30,32 +30,61 @@ const EditProfileScreen = () => {
     setUpdateUser((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handlePickImage = async () => {
+  // const handlePickImage = async () => {
+  //   try {
+  //     const permissionResult =
+  //       await ImagePicker.requestMediaLibraryPermissionsAsync();
+  //     if (!permissionResult.granted) {
+  //       Alert.alert("Permission required", "Please allow gallery access.");
+  //       return;
+  //     }
+
+  //     const result = await ImagePicker.launchImageLibraryAsync({
+  //       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //       allowsEditing: true,
+  //       aspect: [1, 1],
+  //       quality: 0.8,
+  //     });
+
+  //     if (result.canceled) return;
+
+  //     const uri = result.assets[0].uri;
+  //     setUploading(true);
+
+  //     const response = await uploadAvatarService(uri, setProgress);
+
+  //     if (response.success) {
+  //       Toast.show({ type: "success", text1: "Avatar updated successfully!" });
+  //       return response.data;
+  //     } else {
+  //       Toast.show({
+  //         type: "error",
+  //         text1: response.message || "Upload failed",
+  //       });
+  //     }
+  //   } catch (err: any) {
+  //     console.log("Upload error:", err);
+  //     Toast.show({ type: "error", text1: err.message || "Upload failed" });
+  //   } finally {
+  //     setUploading(false);
+  //     setProgress(0);
+  //   }
+  // };
+
+  const handleUploadImage = async (uri: string) => {
     try {
-      const permissionResult =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!permissionResult.granted) {
-        Alert.alert("Permission required", "Please allow gallery access.");
-        return;
-      }
-
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 0.8,
-      });
-
-      if (result.canceled) return;
-
-      const uri = result.assets[0].uri;
       setUploading(true);
-
+      setLoading(true);
       const response = await uploadAvatarService(uri, setProgress);
 
       if (response.success) {
         Toast.show({ type: "success", text1: "Avatar updated successfully!" });
-        return response.data;
+
+        await updateProfile({
+          avatar: response.data.url,
+        });
+        setLoading(false);
+        fetchCurrentUser();
       } else {
         Toast.show({
           type: "error",
@@ -63,11 +92,82 @@ const EditProfileScreen = () => {
         });
       }
     } catch (err: any) {
-      console.log("Upload error:", err);
-      Toast.show({ type: "error", text1: err.message || "Upload failed" });
+      console.error("Upload error:", err);
+      Toast.show({ type: "error", text1: "Upload failed" });
     } finally {
       setUploading(false);
       setProgress(0);
+    }
+  };
+
+  const handleSelectImage = async () => {
+    try {
+      setLoading(true);
+      Alert.alert(
+        "Upload Avatar",
+        "Choose an image source",
+        [
+          {
+            text: "Camera",
+            onPress: async () => {
+              const permission =
+                await ImagePicker.requestCameraPermissionsAsync();
+              if (!permission.granted) {
+                Alert.alert(
+                  "Permission required",
+                  "Please allow camera access."
+                );
+                return;
+              }
+
+              const result = await ImagePicker.launchCameraAsync({
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 0.8,
+              });
+
+              if (!result.canceled) {
+                await handleUploadImage(result.assets[0].uri);
+              }
+            },
+          },
+          {
+            text: "Gallery",
+            onPress: async () => {
+              const permission =
+                await ImagePicker.requestMediaLibraryPermissionsAsync();
+              if (!permission.granted) {
+                Alert.alert(
+                  "Permission required",
+                  "Please allow gallery access."
+                );
+                return;
+              }
+
+              const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 0.8,
+              });
+
+              if (!result.canceled) {
+                await handleUploadImage(result.assets[0].uri);
+              }
+            },
+          },
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+        ],
+
+        { cancelable: true }
+      );
+      setLoading(false);
+    } catch (err: any) {
+      console.log("Image select error:", err);
+      Toast.show({ type: "error", text1: "Something went wrong." });
     }
   };
 
@@ -111,7 +211,7 @@ const EditProfileScreen = () => {
               </Text>
               <Bell size={24} />
             </View>
-            <Pressable className="relative mx-auto mt-8" onPress={handleUpload}>
+            {/* <Pressable className="relative mx-auto mt-8" onPress={handleUpload}>
               <Image
                 source={{ uri: updateUser.avatar }}
                 className="size-32 rounded-full border-2 border-primary"
@@ -120,7 +220,21 @@ const EditProfileScreen = () => {
               <View className="absolute bottom-0 right-0 bg-primary rounded-full p-1 border-2 border-white">
                 <Plus size={18} color={"white"} />
               </View>
+            </Pressable> */}
+            <Pressable
+              className="relative mx-auto mt-8"
+              onPress={handleSelectImage}
+            >
+              <Image
+                source={{ uri: updateUser.avatar }}
+                className="size-32 rounded-full border-2 border-primary"
+                resizeMode="cover"
+              />
+              <View className="absolute bottom-0 right-0 bg-primary rounded-full p-1 border-2 border-white">
+                <Plus size={18} color={"white"} />
+              </View>
             </Pressable>
+
             <View className="mt-8">
               <View
                 className={`border rounded-xl py-2 px-4  ${

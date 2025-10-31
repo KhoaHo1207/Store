@@ -6,6 +6,9 @@ import React from "react";
 import { ActivityIndicator } from "react-native";
 import Toast from "react-native-toast-message";
 
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
 const RootLayoutInner = () => {
   const { loading } = useAuthStore();
 
@@ -19,12 +22,17 @@ const RootLayoutInner = () => {
     </Stack>
   );
 };
+
 const RootLayout = () => {
   return (
     <>
-      <StatusBar translucent backgroundColor="transparent" style="dark" />
-      <RootLayoutInner />
-      <Toast />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider>
+          <StatusBar translucent backgroundColor="transparent" style="dark" />
+          <RootLayoutInner />
+          <Toast />
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
     </>
   );
 };
